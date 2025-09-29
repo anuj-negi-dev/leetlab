@@ -121,3 +121,83 @@ export const getProblem = async (req, res) => {
     });
   }
 };
+
+export const updateProblem = async (req, res) => {
+  const { id } = req.params;
+  const {
+    title,
+    description,
+    difficulty,
+    tags,
+    examples,
+    constraints,
+    testcases,
+    codeSnippets,
+    referenceSolutions,
+    hints,
+    editorial,
+  } = req.body;
+  try {
+    for (const [language, solution] of Object.entries(referenceSolutions)) {
+      const languageID = getLanguageID(language);
+      if (!languageID) {
+        if (!languageID) {
+          return res
+            .status(400)
+            .json({ message: `Unsupported language: ${language}` });
+        }
+      }
+
+      const submissions = testcases.map(({ input, output }) => ({
+        language_id: languageID,
+        source_code: solution,
+        stdin: input,
+        expected_output: output,
+      }));
+
+      const submissionsBatch = await submitBatch(submissions);
+      const submissionTokens = submissionsBatch.map((sub) => sub.token);
+
+      const results = await poolBatchResults(submissionTokens);
+
+      results.forEach((result, index) => {
+        if (result.status.id !== 3) {
+          return res.status(400).json({
+            message: `Reference solution failed for language ${language} on testcase ${
+              index + 1
+            }`,
+          });
+        }
+      });
+    }
+    const updatedProblem = await prisma.problem.update({
+      where: {
+        id,
+      },
+      data: {
+        title,
+        description,
+        difficulty,
+        tags,
+        examples,
+        constraints,
+        testcases,
+        codeSnippets,
+        referenceSolutions,
+        hints,
+        editorial,
+        userID: req.user.id,
+      },
+    });
+
+    return res.json({
+      message: "Problem updated successfully",
+      data: updatedProblem,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: "Error while updating the problem",
+    });
+  }
+};
