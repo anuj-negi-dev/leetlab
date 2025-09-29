@@ -1,6 +1,7 @@
 import express from "express";
 import cookieParser from "cookie-parser";
 import authRouter from "./routes/auth-route.js";
+import problemRouter from "./routes/problem-route.js";
 
 const app = express();
 
@@ -17,6 +18,8 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/v1/auth", authRouter);
+
+app.use("/api/v1/problems", problemRouter);
 
 app.listen(port, () => {
   console.log(`Sever is running at ${port}`);
