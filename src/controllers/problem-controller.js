@@ -83,13 +83,41 @@ export const getAllProblems = async (req, res) => {
     }
 
     return res.json({
-      problems: problems,
+      data: problems,
       message: "All problems fetched successfully",
     });
   } catch (error) {
     console.error(error);
     return res.status(500).json({
       message: "Error while fetching all problems",
+    });
+  }
+};
+
+export const getProblem = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const problem = await db.problem.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!problem) {
+      return res.status(404).json({
+        message: "Not found!",
+      });
+    }
+
+    return res.json({
+      data: problem,
+      message: "Problem fetched successfully",
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: "Error while fetching problem",
     });
   }
 };
