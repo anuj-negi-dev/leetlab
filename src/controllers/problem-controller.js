@@ -72,6 +72,8 @@ export const createProblem = async (req, res) => {
   }
 };
 
+// TODO: Add Pagination
+
 export const getAllProblems = async (req, res) => {
   try {
     const problems = await db.problem.findMany();
@@ -198,6 +200,35 @@ export const updateProblem = async (req, res) => {
     console.log(error);
     return res.status(500).json({
       message: "Error while updating the problem",
+    });
+  }
+};
+
+export const deleteProblem = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const problem = await db.problem.findUnique({
+      where: {
+        id,
+      },
+    });
+    if (!problem) {
+      res.status(404).json({
+        message: "Problem not found",
+      });
+    }
+    await db.problem.delete({
+      where: {
+        id,
+      },
+    });
+    return res.json({
+      message: "Problem deleted successfully",
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: "Error while deleting the problem",
     });
   }
 };

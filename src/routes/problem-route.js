@@ -18,4 +18,6 @@ router.get("/get-problem/:id", authMiddleware, getProblem);
 
 router.put("/update-problem/:id", authMiddleware, isAdmin, updateProblem);
 
+router.delete("/delete-problem/:id", authMiddleware, isAdmin);
+
 export default router;
