@@ -11,10 +11,7 @@ export const uploadImage = async (filePath) => {
   try {
     if (!filePath) return null;
     const data = await cloudinary.uploader.upload(filePath);
-    await fs.unlink(filePath, {
-      resource_type: "auto",
-    });
-    console.log("Data from cloudinary", data);
+    await fs.unlink(filePath);
     return data.url;
   } catch (error) {
     await fs.unlink(filePath);
