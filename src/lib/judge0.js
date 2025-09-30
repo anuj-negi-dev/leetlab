@@ -43,3 +43,11 @@ export const poolBatchResults = async (tokens) => {
     await sleep(1000);
   }
 };
+
+export const getLanguageName = (languageID) => {
+  const languageMap = {
+    63: "JAVASCRIPT",
+    71: "PYTHON",
+  };
+  return languageMap[languageID].toUpperCase() || null;
+};

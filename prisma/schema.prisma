@@ -84,18 +84,20 @@ model Submission {
 }
 
 model TestCaseResult {
-  id            String   @id @default(uuid())
-  submissionID  String
-  testCaseIndex Int
-  stdin         String?
-  stdout        String?
-  stderr        String?
-  compileOutput String?
-  status        String
-  time          String?
-  memory        String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id             String   @id @default(uuid())
+  submissionID   String
+  testCaseIndex  Int
+  stdin          String?
+  stdout         String?
+  stderr         String?
+  compileOutput  String?
+  status         String
+  time           String?
+  memory         String?
+  passed         Boolean
+  expectedOutput String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   submission Submission @relation(fields: [submissionID], references: [id], onDelete: Cascade)
 
