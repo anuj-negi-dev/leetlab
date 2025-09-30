@@ -128,3 +128,66 @@ export const submitCode = async (req, res) => {
     });
   }
 };
+
+export const getAllSubmissions = async (req, res) => {
+  const userID = req.user.id;
+  try {
+    const submissions = await db.submission.findMany({
+      where: {
+        userID,
+      },
+    });
+    return res.json({
+      data: submissions,
+      message: "All submissions fetched successfully",
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      message: "Error while getting all submissions",
+    });
+  }
+};
+
+export const getSubmission = async (req, res) => {
+  const { problemID } = req.params;
+  const userID = req.user.id;
+  try {
+    const submission = await db.submission.findMany({
+      where: {
+        userID,
+        problemID,
+      },
+    });
+    return res.json({
+      data: submission,
+      message: "Submission fetched successfully",
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      message: "Error while getting submission",
+    });
+  }
+};
+
+export const getSubmissionsCount = async (req, res) => {
+  const { problemID } = req.params;
+  try {
+    const submissionsCount = await db.submission.count({
+      where: {
+        problemID,
+      },
+    });
+
+    return res.json({
+      data: submissionsCount,
+      message: "Submissions count fetched successfully",
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      message: "Error while getting submissions count",
+    });
+  }
+};
