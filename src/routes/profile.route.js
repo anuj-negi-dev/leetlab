@@ -1,7 +1,10 @@
 import express from "express";
 import { upload } from "../middleware/multer-middleware.js";
 import { authMiddleware } from "../middleware/auth-middleware.js";
-import { uploadProfileImage } from "../controllers/profile-controller.js";
+import {
+  uploadProfileImage,
+  updateProfile,
+} from "../controllers/profile-controller.js";
 
 const router = express.Router();
 
@@ -11,5 +14,9 @@ router.post(
   upload.single("image"),
   uploadProfileImage
 );
+
+router.patch("/update-profile", authMiddleware, updateProfile);
+
+router.delete("/delete-profile", authMiddleware, deleteProfile);
 
 export default router;
