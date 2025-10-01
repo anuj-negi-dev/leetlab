@@ -276,7 +276,12 @@ export const deleteProblem = async (req, res) => {
 
 export const getAllProblemSolvedByUser = async (req, res) => {
   const userID = req.user.id;
+  const { page, limit } = req.query;
   try {
+    const pageNumber = parseInt(page) || 1;
+    const pageSize = parseInt(limit) || 10;
+    const skip = (pageNumber - 1) * pageSize;
+
     const problems = await db.problem.findMany({
       where: {
         solvedBy: {
@@ -285,6 +290,8 @@ export const getAllProblemSolvedByUser = async (req, res) => {
           },
         },
       },
+      skip,
+      take: pageSize,
       include: {
         solvedBy: {
           where: {
