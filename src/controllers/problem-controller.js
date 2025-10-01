@@ -72,11 +72,45 @@ export const createProblem = async (req, res) => {
   }
 };
 
-// TODO: Add Pagination
-
 export const getAllProblems = async (req, res) => {
+  const { page, limit, difficulty, tags, query } = req.query;
   try {
-    const problems = await db.problem.findMany();
+    const pageNumber = parseInt(page) || 1;
+    const pageSize = parseInt(limit) || 10;
+    const skip = (pageNumber - 1) * pageSize;
+
+    const filters = {};
+
+    if (query) {
+      filters.title = {
+        contains: query,
+        mode: "insensitive",
+      };
+    }
+
+    if (difficulty) {
+      filters.difficulty = difficulty;
+    }
+
+    if (tags) {
+      const tagArray = tags.split(",");
+      filters.tags = {
+        hasSome: tagArray,
+      };
+    }
+
+    const problems = await db.problem.findMany({
+      where: filters,
+      skip,
+      take: pageSize,
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    const totalProblems = await db.problem.count({
+      where: {},
+    });
 
     if (!problems) {
       return res.status(404).json({
@@ -86,6 +120,13 @@ export const getAllProblems = async (req, res) => {
 
     return res.json({
       data: problems,
+      metadata: {
+        total: totalProblems,
+        page: pageNumber,
+        limit: itemsPerPage,
+        totalPages: Math.ceil(totalProblems / itemsPerPage),
+        count: problems.length,
+      },
       message: "All problems fetched successfully",
     });
   } catch (error) {
