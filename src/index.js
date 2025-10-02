@@ -1,5 +1,6 @@
 import express from "express";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 import authRouter from "./routes/auth-route.js";
 import problemRouter from "./routes/problem-route.js";
 import submissionRouter from "./routes/submission-route.js";
@@ -8,11 +9,18 @@ import ProfileRouter from "./routes/profile.route.js";
 
 const app = express();
 
-const port = process.env.PORT || 3000;
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL,
+    credentials: true,
+  })
+);
 
 app.use(express.json());
 
 app.use(cookieParser());
+
+const port = process.env.PORT || 3000;
 
 app.get("/", (req, res) => {
   res.json({

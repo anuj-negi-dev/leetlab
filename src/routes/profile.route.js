@@ -4,6 +4,7 @@ import { authMiddleware } from "../middleware/auth-middleware.js";
 import {
   uploadProfileImage,
   updateProfile,
+  deleteProfile,
 } from "../controllers/profile-controller.js";
 
 const router = express.Router();
