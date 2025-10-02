@@ -50,6 +50,7 @@ export const register = async (req, res) => {
         userName: newUser.userName,
         email: newUser.email,
         role: newUser.role,
+        image: newUser.image,
       },
     });
   } catch (error) {
@@ -99,6 +100,7 @@ export const login = async (req, res) => {
         userName: user.userName,
         email: user.email,
         role: user.role,
+        image: user.image,
       },
     });
   } catch (error) {
