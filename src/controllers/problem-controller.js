@@ -270,6 +270,9 @@ export const deleteProblem = async (req, res) => {
         message: "Problem not found",
       });
     }
+    await db.problemSolved.deleteMany({
+      where: { problemID: id },
+    });
     await db.problem.delete({
       where: {
         id,
