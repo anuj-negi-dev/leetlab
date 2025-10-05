@@ -106,7 +106,16 @@ export const getAllProblems = async (req, res) => {
       orderBy: {
         createdAt: "desc",
       },
+      include: {
+        solvedBy: {
+          where: {
+            userID: req.user.id,
+          },
+        },
+      },
     });
+
+    console.log("Problems", problems);
 
     const totalProblems = await db.problem.count({
       where: {},
@@ -123,8 +132,8 @@ export const getAllProblems = async (req, res) => {
       metadata: {
         total: totalProblems,
         page: pageNumber,
-        limit: itemsPerPage,
-        totalPages: Math.ceil(totalProblems / itemsPerPage),
+        limit: pageSize,
+        totalPages: Math.ceil(totalProblems / pageSize),
         count: problems.length,
       },
       message: "All problems fetched successfully",
@@ -144,6 +153,9 @@ export const getProblem = async (req, res) => {
     const problem = await db.problem.findUnique({
       where: {
         id,
+      },
+      include: {
+        solvedBy: true,
       },
     });
 
