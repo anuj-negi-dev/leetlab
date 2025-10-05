@@ -124,12 +124,10 @@ export const addProblemToPlaylist = async (req, res) => {
         message: "Playlist not found",
       });
     }
-    const problem = await db.problemInPlaylist.findUnique({
+    const problem = await db.problemInPlaylist.findFirst({
       where: {
-        playlistID_problemID: {
-          playlistID,
-          problemID,
-        },
+        playlistID,
+        problemID,
       },
     });
     if (problem) {
